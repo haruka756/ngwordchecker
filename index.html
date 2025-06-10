@@ -1,123 +1,179 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>Googleビジネスプロフィール　NGワードチェッカー</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google ビジネスプロフィール NGワードチェッカー</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f4f6f8;
-      padding: 40px;
-      color: #333;
+      font-family: 'Noto Sans JP', sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 2rem;
     }
-
-    h1, h2 {
-      color: #2c3e50;
-    }
-
     .container {
       max-width: 800px;
       margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
-
+    .subtitle {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 0.2rem;
+      text-align: center;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .description {
+      font-size: 15px;
+      color: #444;
+      text-align: left;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
     textarea {
       width: 100%;
-      height: 150px;
+      height: 160px;
+      padding: 1rem;
       font-size: 16px;
-      border-radius: 8px;
       border: 1px solid #ccc;
-      padding: 12px;
+      border-radius: 8px;
       resize: vertical;
-      margin-bottom: 20px;
-      box-sizing: border-box;
+      margin-bottom: 0.8rem;
     }
-
-    .highlighted {
+    .highlight {
       background-color: #ffe066;
       font-weight: bold;
-      padding: 2px 4px;
-      border-radius: 4px;
     }
-
     .output {
-      border: 1px solid #ddd;
-      padding: 20px;
-      min-height: 100px;
-      background-color: #fafafa;
-      border-radius: 8px;
       white-space: pre-wrap;
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      min-height: 100px;
+      margin-bottom: 0.4rem;
     }
-
-    .keyword-list ul {
-      list-style: none;
-      padding-left: 0;
+    .preview-description {
+      font-size: 14px;
+      color: #555;
+      text-align: left;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
     }
-
-    .keyword-list li {
-      margin-bottom: 6px;
+    .controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
     }
-
-    button {
-      background-color: #3498db;
-      border: none;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.2s ease;
-    }
-
-    button:hover {
-      background-color: #2980b9;
-    }
-
-    input[type="text"] {
-      padding: 6px 10px;
+    .controls input {
+      flex-grow: 1;
+      padding: 0.6rem;
+      font-size: 14px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      margin-right: 10px;
     }
-
-    .keyword-item {
+    .controls button {
+      padding: 0.6rem 1rem;
+      font-size: 14px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .controls button:hover {
+      background-color: #0056b3;
+    }
+    ul.keyword-list {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 2rem;
+    }
+    ul.keyword-list li {
+      margin: 0.4rem 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: #f1f3f5;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+    }
+    ul.keyword-list button {
+      background: #e03131;
+      color: white;
+      border: none;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    ul.keyword-list button:hover {
+      background: #c92a2a;
     }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <h1>Googleビジネスプロフィール　NGワードチェッカー</h1>
+    <div class="subtitle">Google ビジネスプロフィール</div>
+    <div class="title">NGワードチェッカー</div>
+    <div class="description">
+      Googleビジネスプロフィールに「最新情報」のブログ記事を投稿する際、Googleポリシー違反により投稿できないことはありませんか？<br>
+      ボックスに文章を貼り付けると、ポリシー違反の原因の可能性のある語句がハイライトされます。<br>
+      記事執筆や投稿の際にご利用ください。
+    </div>
 
-    <textarea id="textInput" placeholder="ここに文章を入力してください..."></textarea>
+    <textarea id="textInput" placeholder="文章を入力してください..."></textarea>
+
+    <div class="output" id="highlightedOutput"></div>
     
-    <div class="keyword-list">
-      <h2>GoogleビジネスプロフィールのNGワードを追加・削除できます</h2>
-      <ul id="keywords"></ul>
+    <div class="preview-description">
+      Googleビジネスプロフィールに、ポリシー違反によって投稿できなかったNGワードを追加・削除することができます。<br>
+      投稿できなかった原因と思われるキーワードがあれば、リストに追加することでその語句をハイライト表示することができます。<br>
+      NGワードに追加されている語句が再度投稿できた場合には、NGワードリストから削除することができます。
+    </div>
+
+    <div class="controls">
       <input type="text" id="newKeyword" placeholder="NGワードを追加">
       <button onclick="addKeyword()">追加</button>
     </div>
 
-    <h2>プレビュー</h2>
-    <div class="output" id="highlightedOutput"></div>
+    <ul class="keyword-list" id="keywordList"></ul>
   </div>
 
   <script>
-    let keywords = ["重要", "注意", "警告"];
+    let keywords = [];
+    const STORAGE_KEY = "highlight_keywords";
 
-    function updateKeywordsList() {
-      const ul = document.getElementById("keywords");
+    function loadKeywords() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        keywords = JSON.parse(saved);
+      } else {
+        keywords = ["重要", "注意", "確認"];
+        saveKeywords();
+      }
+    }
+
+    function saveKeywords() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(keywords));
+    }
+
+    function renderKeywords() {
+      const ul = document.getElementById("keywordList");
       ul.innerHTML = "";
       keywords.forEach((kw, index) => {
         const li = document.createElement("li");
-        li.className = "keyword-item";
         li.innerHTML = `
           <span>${kw}</span>
           <button onclick="removeKeyword(${index})">削除</button>
@@ -128,18 +184,20 @@
 
     function addKeyword() {
       const input = document.getElementById("newKeyword");
-      const kw = input.value.trim();
-      if (kw && !keywords.includes(kw)) {
-        keywords.push(kw);
+      const newKw = input.value.trim();
+      if (newKw && !keywords.includes(newKw)) {
+        keywords.push(newKw);
+        saveKeywords();
         input.value = "";
-        updateKeywordsList();
+        renderKeywords();
         highlightText();
       }
     }
 
     function removeKeyword(index) {
       keywords.splice(index, 1);
-      updateKeywordsList();
+      saveKeywords();
+      renderKeywords();
       highlightText();
     }
 
@@ -147,17 +205,17 @@
       const text = document.getElementById("textInput").value;
       let highlighted = text;
       keywords.forEach(kw => {
-        const regex = new RegExp(`(${kw})`, 'g');
-        highlighted = highlighted.replace(regex, '<span class="highlighted">$1</span>');
+        const re = new RegExp(`(${kw})`, "g");
+        highlighted = highlighted.replace(re, '<span class="highlight">$1</span>');
       });
       document.getElementById("highlightedOutput").innerHTML = highlighted;
     }
 
     document.getElementById("textInput").addEventListener("input", highlightText);
 
-    updateKeywordsList();
+    loadKeywords();
+    renderKeywords();
     highlightText();
   </script>
-
 </body>
 </html>
