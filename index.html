@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Google ビジネスプロフィール NGワードチェッカー</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fdf6ee;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f9f9f9;
       color: #333;
       margin: 0;
       padding: 0;
@@ -43,7 +43,7 @@
       padding: 10px;
       font-size: 16px;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 6px;
       box-sizing: border-box;
       margin-bottom: 20px;
     }
@@ -51,15 +51,15 @@
     .preview {
       white-space: pre-wrap;
       padding: 10px;
-      background-color: #fff8f3;
+      background-color: #ffffff;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 6px;
       min-height: 150px;
       margin-bottom: 20px;
     }
 
     .highlight {
-      background-color: #ffdddd;
+      background-color: #ffe6e6;
       font-weight: bold;
     }
 
@@ -67,26 +67,29 @@
       display: flex;
       gap: 10px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
     .word-edit input {
       flex: 1;
-      padding: 6px;
-      border: 1px solid #aaa;
-      border-radius: 6px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
     }
 
     .word-edit button {
-      padding: 6px 12px;
-      background-color: #ef5350;
-      color: white;
-      border: none;
-      border-radius: 6px;
+      padding: 8px 14px;
+      font-size: 14px;
+      border: 1px solid #888;
+      background-color: #fff;
+      border-radius: 4px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
 
     .word-edit button:hover {
-      background-color: #d32f2f;
+      background-color: #eee;
     }
 
     .word-list {
@@ -95,17 +98,18 @@
 
     .word-list span {
       display: inline-block;
-      background-color: #ffcdd2;
+      background-color: #fdd;
       padding: 5px 10px;
       border-radius: 12px;
       margin: 2px;
+      font-size: 13px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="logo-container">
-      <img src="ngwordcheckerlogo.png" alt="Google ビジネスプロフィール NGワードチェッカー" class="logo-img">
+      <img src="ngwordcheckerlogo.png" alt="Google ビジネスプロフィール NGワードチェッカー" class="logo-img" />
     </div>
 
     <p class="description">
@@ -124,26 +128,26 @@
     </p>
 
     <div class="word-edit">
-      <input type="text" id="newWordInput" placeholder="NGワードを追加">
+      <input type="text" id="newWordInput" placeholder="NGワードを追加・削除">
       <button onclick="addWord()">追加</button>
-      <button onclick="clearWords()">削除</button>
+      <button onclick="deleteWord()">削除</button>
     </div>
 
     <div class="word-list" id="wordList"></div>
   </div>
 
   <script>
-    let keywords = JSON.parse(localStorage.getItem('keywords')) || ['重要', '注意', '確認'];
+    let keywords = JSON.parse(localStorage.getItem("keywords")) || ['重要', '注意', '確認'];
 
-    const textInput = document.getElementById('textInput');
-    const preview = document.getElementById('preview');
-    const newWordInput = document.getElementById('newWordInput');
-    const wordList = document.getElementById('wordList');
+    const textInput = document.getElementById("textInput");
+    const preview = document.getElementById("preview");
+    const newWordInput = document.getElementById("newWordInput");
+    const wordList = document.getElementById("wordList");
 
     function updatePreview() {
       const text = textInput.value;
       const highlightedText = keywords.reduce((acc, word) => {
-        const regex = new RegExp(`(${word})`, 'gi');
+        const regex = new RegExp(`(${word})`, "gi");
         return acc.replace(regex, '<span class="highlight">$1</span>');
       }, text);
       preview.innerHTML = highlightedText;
@@ -152,7 +156,7 @@
     function updateWordList() {
       wordList.innerHTML = '';
       keywords.forEach(word => {
-        const span = document.createElement('span');
+        const span = document.createElement("span");
         span.textContent = word;
         wordList.appendChild(span);
       });
@@ -162,23 +166,27 @@
       const word = newWordInput.value.trim();
       if (word && !keywords.includes(word)) {
         keywords.push(word);
-        localStorage.setItem('keywords', JSON.stringify(keywords));
+        localStorage.setItem("keywords", JSON.stringify(keywords));
         newWordInput.value = '';
         updateWordList();
         updatePreview();
       }
     }
 
-    function clearWords() {
-      keywords = ['重要', '注意', '確認'];
-      localStorage.setItem('keywords', JSON.stringify(keywords));
-      updateWordList();
-      updatePreview();
+    function deleteWord() {
+      const word = newWordInput.value.trim();
+      const index = keywords.indexOf(word);
+      if (index !== -1) {
+        keywords.splice(index, 1);
+        localStorage.setItem("keywords", JSON.stringify(keywords));
+        newWordInput.value = '';
+        updateWordList();
+        updatePreview();
+      }
     }
 
-    textInput.addEventListener('input', updatePreview);
+    textInput.addEventListener("input", updatePreview);
 
-    // 初期表示
     updateWordList();
     updatePreview();
   </script>
