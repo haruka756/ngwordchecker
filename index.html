@@ -2,193 +2,228 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Google ビジネスプロフィール NGワードチェッカー</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: "Segoe UI", sans-serif;
-      background-color: #f9f9f9;
-      color: #333;
+      font-family: 'Noto Sans JP', sans-serif;
+      background-color: #f0f2f5;
       margin: 0;
-      padding: 0;
+      padding: 2rem;
     }
-
     .container {
       max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
-
-    .logo-container {
+    .subtitle {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 0.2rem;
       text-align: center;
-      margin-bottom: 20px;
     }
-
-    .logo-img {
+    .title {
+      margin-bottom: 0.5rem;
+      max-width: 100%;
+      width: 100%;
+      text-align: center;
+    }
+    .title img {
       width: 100%;
       height: auto;
+      max-width: 100%;
       display: block;
+      margin: 0 auto;
     }
-
-    .description, .description-below {
-      font-size: 14px;
-      text-align: left;
+    .description {
+      font-size: 15px;
       color: #444;
-      margin-bottom: 20px;
+      text-align: left;
+      margin-bottom: 2rem;
       line-height: 1.6;
     }
-
     textarea {
       width: 100%;
-      height: 200px;
-      padding: 10px;
+      height: 160px;
+      padding: 1rem;
       font-size: 16px;
       border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-      margin-bottom: 20px;
+      border-radius: 8px;
+      resize: vertical;
+      margin-bottom: 0.8rem;
     }
-
-    .preview {
-      white-space: pre-wrap;
-      padding: 10px;
-      background-color: #ffffff;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      min-height: 150px;
-      margin-bottom: 20px;
-    }
-
     .highlight {
-      background-color: #ffe6e6;
+      background-color: #ffe066;
       font-weight: bold;
     }
-
-    .word-edit {
+    .output {
+      white-space: pre-wrap;
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      min-height: 100px;
+      margin-bottom: 0.4rem;
+    }
+    .preview-description {
+      font-size: 14px;
+      color: #555;
+      text-align: left;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+    .controls {
       display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
       flex-wrap: wrap;
     }
-
-    .word-edit input {
-      flex: 1;
-      padding: 8px;
+    .controls input {
+      flex-grow: 1;
+      padding: 0.6rem;
+      font-size: 14px;
       border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
+      border-radius: 6px;
     }
-
-    .word-edit button {
-      padding: 8px 14px;
+    .controls button {
+      padding: 0.6rem 1rem;
       font-size: 14px;
-      border: 1px solid #888;
-      background-color: #fff;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .controls button:hover {
+      background-color: #0056b3;
+    }
+    ul.keyword-list {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 2rem;
+    }
+    ul.keyword-list li {
+      margin: 0.4rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f1f3f5;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+    }
+    ul.keyword-list button {
+      background: #e03131;
+      color: white;
+      border: none;
+      padding: 0.3rem 0.8rem;
       border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
     }
-
-    .word-edit button:hover {
-      background-color: #eee;
-    }
-
-    .word-list {
-      margin-bottom: 20px;
-    }
-
-    .word-list span {
-      display: inline-block;
-      background-color: #fdd;
-      padding: 5px 10px;
-      border-radius: 12px;
-      margin: 2px;
-      font-size: 13px;
+    ul.keyword-list button:hover {
+      background: #c92a2a;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="logo-container">
-      <img src="ngwordcheckerlogo.png" alt="Google ビジネスプロフィール NGワードチェッカー" class="logo-img" />
+    <div class="subtitle">Google ビジネスプロフィール</div>
+    <div class="title">
+      <img src="ngwordcheckerlogo.png" alt="ロゴ" />
     </div>
-
-    <p class="description">
+    <div class="description">
       Googleビジネスプロフィールに「最新情報」のブログ記事を投稿する際、Googleポリシー違反により投稿できないことはありませんか？<br>
       ボックスに文章を貼り付けると、ポリシー違反の原因の可能性のある語句がハイライトされます。<br>
       記事執筆や投稿の際にご利用ください。
-    </p>
-
-    <textarea id="textInput" placeholder="文章を入力してください"></textarea>
-
-    <div class="preview" id="preview"></div>
-
-    <p class="description-below">
-      Googleビジネスプロフィールに、ポリシー違反によって投稿できなかったNGワードを追加・削除することができます。<br>
-      投稿できなかった原因と思われるキーワードがあれば、追加することで、その語句をハイライト表示することができます。
-    </p>
-
-    <div class="word-edit">
-      <input type="text" id="newWordInput" placeholder="NGワードを追加・削除">
-      <button onclick="addWord()">追加</button>
-      <button onclick="deleteWord()">削除</button>
     </div>
 
-    <div class="word-list" id="wordList"></div>
+    <textarea id="textInput" placeholder="文章を入力してください..."></textarea>
+
+    <div class="output" id="highlightedOutput"></div>
+    
+    <div class="preview-description">
+      Googleビジネスプロフィールに、ポリシー違反によって投稿できなかったNGワードを追加・削除することができます。<br>
+      投稿できなかった原因と思われるキーワードがあれば、リストに追加することでその語句をハイライト表示することができます。<br>
+      NGワードに追加されている語句が再度投稿できた場合には、NGワードリストから削除することができます。
+    </div>
+
+    <div class="controls">
+      <input type="text" id="newKeyword" placeholder="NGワードを追加">
+      <button onclick="addKeyword()">追加</button>
+    </div>
+
+    <ul class="keyword-list" id="keywordList"></ul>
   </div>
 
   <script>
-    let keywords = JSON.parse(localStorage.getItem("keywords")) || ['重要', '注意', '確認'];
+    let keywords = [];
+    const STORAGE_KEY = "highlight_keywords";
 
-    const textInput = document.getElementById("textInput");
-    const preview = document.getElementById("preview");
-    const newWordInput = document.getElementById("newWordInput");
-    const wordList = document.getElementById("wordList");
-
-    function updatePreview() {
-      const text = textInput.value;
-      const highlightedText = keywords.reduce((acc, word) => {
-        const regex = new RegExp(`(${word})`, "gi");
-        return acc.replace(regex, '<span class="highlight">$1</span>');
-      }, text);
-      preview.innerHTML = highlightedText;
+    function loadKeywords() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        keywords = JSON.parse(saved);
+      } else {
+        keywords = ["重要", "注意", "確認"];
+        saveKeywords();
+      }
     }
 
-    function updateWordList() {
-      wordList.innerHTML = '';
-      keywords.forEach(word => {
-        const span = document.createElement("span");
-        span.textContent = word;
-        wordList.appendChild(span);
+    function saveKeywords() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(keywords));
+    }
+
+    function renderKeywords() {
+      const ul = document.getElementById("keywordList");
+      ul.innerHTML = "";
+      keywords.forEach((kw, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span>${kw}</span>
+          <button onclick="removeKeyword(${index})">削除</button>
+        `;
+        ul.appendChild(li);
       });
     }
 
-    function addWord() {
-      const word = newWordInput.value.trim();
-      if (word && !keywords.includes(word)) {
-        keywords.push(word);
-        localStorage.setItem("keywords", JSON.stringify(keywords));
-        newWordInput.value = '';
-        updateWordList();
-        updatePreview();
+    function addKeyword() {
+      const input = document.getElementById("newKeyword");
+      const newKw = input.value.trim();
+      if (newKw && !keywords.includes(newKw)) {
+        keywords.push(newKw);
+        saveKeywords();
+        input.value = "";
+        renderKeywords();
+        highlightText();
       }
     }
 
-    function deleteWord() {
-      const word = newWordInput.value.trim();
-      const index = keywords.indexOf(word);
-      if (index !== -1) {
-        keywords.splice(index, 1);
-        localStorage.setItem("keywords", JSON.stringify(keywords));
-        newWordInput.value = '';
-        updateWordList();
-        updatePreview();
-      }
+    function removeKeyword(index) {
+      keywords.splice(index, 1);
+      saveKeywords();
+      renderKeywords();
+      highlightText();
     }
 
-    textInput.addEventListener("input", updatePreview);
+    function highlightText() {
+      const text = document.getElementById("textInput").value;
+      let highlighted = text;
+      keywords.forEach(kw => {
+        const re = new RegExp(`(${kw})`, "g");
+        highlighted = highlighted.replace(re, '<span class="highlight">$1</span>');
+      });
+      document.getElementById("highlightedOutput").innerHTML = highlighted;
+    }
 
-    updateWordList();
-    updatePreview();
+    document.getElementById("textInput").addEventListener("input", highlightText);
+
+    loadKeywords();
+    renderKeywords();
+    highlightText();
   </script>
 </body>
 </html>
