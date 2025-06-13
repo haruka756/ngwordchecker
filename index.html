@@ -8,7 +8,7 @@
   <style>
     body {
       font-family: 'Noto Sans JP', sans-serif;
-      background-color: #e6cfb2;
+      background-color: #e5f7f3;
       margin: 0;
       padding: 2rem;
     }
@@ -30,16 +30,7 @@
     .title img {
       width: 100%;
       height: auto;
-      display: inline-block;
-      max-width: 100%;
-    }
-
-    .description {
-      font-size: 15px;
-      color: #444;
-      text-align: left;
-      margin-bottom: 2rem;
-      line-height: 1.6;
+      max-width: 300px;
     }
 
     textarea {
@@ -55,7 +46,7 @@
     }
 
     .highlight {
-      background-color: #ffe066;
+      background-color: #fff3bf;
       font-weight: bold;
     }
 
@@ -67,14 +58,6 @@
       border: 1px solid #ddd;
       min-height: 100px;
       margin-bottom: 0.4rem;
-    }
-
-    .preview-description {
-      font-size: 14px;
-      color: #555;
-      text-align: left;
-      margin-bottom: 1.5rem;
-      line-height: 1.4;
     }
 
     .controls {
@@ -97,7 +80,7 @@
       padding: 0.6rem 1rem;
       font-size: 14px;
       border: none;
-      background-color: #d63e2a;
+      background-color: #38b2ac;
       color: white;
       border-radius: 6px;
       cursor: pointer;
@@ -105,7 +88,7 @@
     }
 
     .controls button:hover {
-      background-color: #b93624;
+      background-color: #2c7a7b;
     }
 
     ul.keyword-list {
@@ -125,7 +108,7 @@
     }
 
     ul.keyword-list button {
-      background: #d63e2a;
+      background: #e03131;
       color: white;
       border: none;
       padding: 0.3rem 0.8rem;
@@ -134,7 +117,7 @@
     }
 
     ul.keyword-list button:hover {
-      background: #b93624;
+      background: #c92a2a;
     }
 
     @media (max-width: 600px) {
@@ -151,16 +134,9 @@
       .controls input, .controls button {
         width: 100%;
       }
-      .description, .preview-description {
-        font-size: 14px;
-      }
       textarea {
         font-size: 15px;
         height: 140px;
-      }
-      .controls button {
-        font-size: 15px;
-        padding: 0.8rem;
       }
     }
   </style>
@@ -171,21 +147,8 @@
       <img src="ngwordcheckerlogo.png" alt="Google ビジネスプロフィール NGワードチェッカー" />
     </div>
 
-    <div class="description">
-      Googleビジネスプロフィールに「最新情報」のブログ記事を投稿する際、Googleポリシー違反により投稿できないことはありませんか？<br>
-      ボックスに文章を貼り付けると、ポリシー違反の原因の可能性のある語句がハイライトされます。<br>
-      記事執筆や投稿の際にご利用ください。
-    </div>
-
     <textarea id="textInput" placeholder="文章を入力してください..."></textarea>
-
     <div class="output" id="highlightedOutput"></div>
-
-    <div class="preview-description">
-      Googleビジネスプロフィールに、ポリシー違反によって投稿できなかったNGワードを追加・削除することができます。<br>
-      投稿できなかった原因と思われるキーワードがあれば、リストに追加することでその語句をハイライト表示することができます。<br>
-      NGワードに追加されている語句が再度投稿できた場合には、NGワードリストから削除することができます。
-    </div>
 
     <div class="controls">
       <input type="text" id="newKeyword" placeholder="NGワードを追加">
@@ -194,59 +157,65 @@
 
     <ul class="keyword-list" id="keywordList"></ul>
   </div>
-<script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwgUyiZmLjVft0S1CJdCvfU7vud19ds2Ns8lFYv3ykEqNIZVnTDPBQzNLduIU7k4-Co/exec"
 
-  let keywords = [];
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbwgUyiZmLjVft0S1CJdCvfU7vud19ds2Ns8lFYv3ykEqNIZVnTDPBQzNLduIU7k4-Co/exec";
+    let keywords = [];
 
-  async function fetchKeywords() {
-    const res = await fetch(API_URL);
-    keywords = await res.json();
-    renderKeywords();
-    highlightText();
-  }
+    async function fetchKeywords() {
+      try {
+        const res = await fetch(API_URL);
+        keywords = await res.json();
+        renderKeywords();
+        highlightText();
+      } catch (err) {
+        console.error("取得エラー", err);
+      }
+    }
 
-  async function addKeyword() {
-    const input = document.getElementById("newKeyword");
-    const newKw = input.value.trim();
-    if (!newKw || keywords.includes(newKw)) return;
+    async function addKeyword() {
+      const input = document.getElementById("newKeyword");
+      const newKw = input.value.trim();
+      if (!newKw || keywords.includes(newKw)) return;
 
-    await fetch(`${API_URL}?action=add&keyword=${encodeURIComponent(newKw)}`, { method: "POST" });
-    input.value = "";
+      await fetch(`${API_URL}?action=add&keyword=${encodeURIComponent(newKw)}`, {
+        method: "POST"
+      });
+      input.value = "";
+      fetchKeywords();
+    }
+
+    async function removeKeyword(index) {
+      const keyword = keywords[index];
+      await fetch(`${API_URL}?action=delete&keyword=${encodeURIComponent(keyword)}`, {
+        method: "POST"
+      });
+      fetchKeywords();
+    }
+
+    function renderKeywords() {
+      const ul = document.getElementById("keywordList");
+      ul.innerHTML = "";
+      keywords.forEach((kw, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span>${kw}</span><button onclick="removeKeyword(${index})">削除</button>`;
+        ul.appendChild(li);
+      });
+    }
+
+    function highlightText() {
+      const text = document.getElementById("textInput").value;
+      let highlighted = text;
+      keywords.forEach(kw => {
+        const re = new RegExp(`(${kw})`, "g");
+        highlighted = highlighted.replace(re, '<span class="highlight">$1</span>');
+      });
+      document.getElementById("highlightedOutput").innerHTML = highlighted;
+    }
+
+    document.getElementById("textInput").addEventListener("input", highlightText);
+
     fetchKeywords();
-  }
-
-  async function removeKeyword(index) {
-    const keyword = keywords[index];
-    await fetch(`${API_URL}?action=delete&keyword=${encodeURIComponent(keyword)}`, { method: "POST" });
-    fetchKeywords();
-  }
-
-  function renderKeywords() {
-    const ul = document.getElementById("keywordList");
-    ul.innerHTML = "";
-    keywords.forEach((kw, index) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<span>${kw}</span><button onclick="removeKeyword(${index})">削除</button>`;
-      ul.appendChild(li);
-    });
-  }
-
-  function highlightText() {
-    const text = document.getElementById("textInput").value;
-    let highlighted = text;
-    keywords.forEach(kw => {
-      const re = new RegExp(`(${kw})`, "g");
-      highlighted = highlighted.replace(re, '<span class="highlight">$1</span>');
-    });
-    document.getElementById("highlightedOutput").innerHTML = highlighted;
-  }
-
-  document.getElementById("textInput").addEventListener("input", highlightText);
-
-  fetchKeywords();
-</script>
-
-  
+  </script>
 </body>
 </html>
