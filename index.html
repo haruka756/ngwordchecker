@@ -194,72 +194,59 @@
 
     <ul class="keyword-list" id="keywordList"></ul>
   </div>
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwgUyiZmLjVft0S1CJdCvfU7vud19ds2Ns8lFYv3ykEqNIZVnTDPBQzNLduIU7k4-Co/exec"
 
-  <script>
-    let keywords = [];
-    const STORAGE_KEY = "highlight_keywords";
+  let keywords = [];
 
-    function loadKeywords() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        keywords = JSON.parse(saved);
-      } else {
-        keywords = ["重要", "注意", "確認"];
-        saveKeywords();
-      }
-    }
-
-    function saveKeywords() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(keywords));
-    }
-
-    function renderKeywords() {
-      const ul = document.getElementById("keywordList");
-      ul.innerHTML = "";
-      keywords.forEach((kw, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <span>${kw}</span>
-          <button onclick="removeKeyword(${index})">削除</button>
-        `;
-        ul.appendChild(li);
-      });
-    }
-
-    function addKeyword() {
-      const input = document.getElementById("newKeyword");
-      const newKw = input.value.trim();
-      if (newKw && !keywords.includes(newKw)) {
-        keywords.push(newKw);
-        saveKeywords();
-        input.value = "";
-        renderKeywords();
-        highlightText();
-      }
-    }
-
-    function removeKeyword(index) {
-      keywords.splice(index, 1);
-      saveKeywords();
-      renderKeywords();
-      highlightText();
-    }
-
-    function highlightText() {
-      const text = document.getElementById("textInput").value;
-      let highlighted = text;
-      keywords.forEach(kw => {
-        const re = new RegExp(`(${kw})`, "g");
-        highlighted = highlighted.replace(re, '<span class="highlight">$1</span>');
-      });
-      document.getElementById("highlightedOutput").innerHTML = highlighted;
-    }
-
-    document.getElementById("textInput").addEventListener("input", highlightText);
-
-    loadKeywords();
+  async function fetchKeywords() {
+    const res = await fetch(API_URL);
+    keywords = await res.json();
     renderKeywords();
     highlightText();
-  </script>
+  }
+
+  async function addKeyword() {
+    const input = document.getElementById("newKeyword");
+    const newKw = input.value.trim();
+    if (!newKw || keywords.includes(newKw)) return;
+
+    await fetch(`${API_URL}?action=add&keyword=${encodeURIComponent(newKw)}`, { method: "POST" });
+    input.value = "";
+    fetchKeywords();
+  }
+
+  async function removeKeyword(index) {
+    const keyword = keywords[index];
+    await fetch(`${API_URL}?action=delete&keyword=${encodeURIComponent(keyword)}`, { method: "POST" });
+    fetchKeywords();
+  }
+
+  function renderKeywords() {
+    const ul = document.getElementById("keywordList");
+    ul.innerHTML = "";
+    keywords.forEach((kw, index) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<span>${kw}</span><button onclick="removeKeyword(${index})">削除</button>`;
+      ul.appendChild(li);
+    });
+  }
+
+  function highlightText() {
+    const text = document.getElementById("textInput").value;
+    let highlighted = text;
+    keywords.forEach(kw => {
+      const re = new RegExp(`(${kw})`, "g");
+      highlighted = highlighted.replace(re, '<span class="highlight">$1</span>');
+    });
+    document.getElementById("highlightedOutput").innerHTML = highlighted;
+  }
+
+  document.getElementById("textInput").addEventListener("input", highlightText);
+
+  fetchKeywords();
+</script>
+
+  
 </body>
 </html>
